@@ -5,35 +5,57 @@ set -e
 
 BUILD_DIR=$1
 CACHE_DIR=$2
-ENV_DIR=$3
-
-BIN_DIR=$(cd "$(dirname "$0")"; pwd)
+BUILDPACK_NAME=imagemagick
+BIN_DIR=$(
+  cd "$(dirname "$0")"
+  pwd
+) # absolute path
 ROOT_DIR=$(dirname "$BIN_DIR")
 
-function vendor() {
-  local binary="$1"
-  local path="$2"
+function indent() {
+  c='s/^/       /'
+  case $(uname) in
+  Darwin) sed -l "$c" ;;
+  *) sed -u "$c" ;;
+  esac
+}
 
+arrow() {
+  sed -u 's/^/-----> /'
+}
+
+function vendor() {
+  binary="$1"
+  path="$2"
+
+  echo "Fetching $binary" | indent
   mkdir -p $path
-  tar -xj -f $binary -C $path
+  tar -xz -f $binary -C $path
 
   if [ -d "$path/bin" ]; then
-    export PATH="$path/bin:$PATH"
+    export PATH=$path/bin:$PATH
   fi
 
   if [ -d "$path/lib/pkgconfig" ]; then
+    # pkg-config should handle compiler options (if used)
     export PKG_CONFIG_PATH="$path/lib/pkgconfig:$PKG_CONFIG_PATH"
   fi
 
+  # standard paths
   export CPPPATH="$path/include:$CPPPATH"
   export CPATH="$path/include:$CPATH"
   export LIBRARY_PATH="$path/lib:$LIBRARY_PATH"
+
   export LD_LIBRARY_PATH="$path/lib:$LD_LIBRARY_PATH"
 }
 
-vendor "$ROOT_DIR/build/imagemagick.tar.bz2" "$BUILD_DIR/vendor/imagemagick"
+echo "Vendoring binaries" | arrow
 
-cat <<EOF > export
+vendor "${ROOT_DIR}/build/imagemagick-heroku-22.tar.gz" "$BUILD_DIR/vendor/imagemagick"
+
+echo "Configuring build environment" | arrow
+
+cat <<EOF >export
 export MAGICK_HOME="$BUILD_DIR/vendor/imagemagick"
 export MAGICK_CONFIGURE_PATH="/app/.magick"
 export PATH="/app/bin:$PATH:\$PATH"
@@ -44,8 +66,10 @@ export CPPPATH="\$CPPPATH:$CPPPATH"
 export CPATH="\$CPATH:$CPATH"
 EOF
 
+echo "Building runtime environment" | arrow
 mkdir -p $BUILD_DIR/.profile.d
-cat <<EOF > $BUILD_DIR/.profile.d/imagemagick.sh
+
+cat <<EOF >$BUILD_DIR/.profile.d/$BUILDPACK_NAME.sh
 export MAGICK_HOME="$BUILD_DIR/vendor/imagemagick"
 export MAGICK_CONFIGURE_PATH="/app/.magick"
 export PATH="/app/bin:${PATH//$BUILD_DIR//app}:\$PATH"
