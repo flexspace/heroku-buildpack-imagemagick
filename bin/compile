@@ -51,7 +51,7 @@ function vendor() {
 
 echo "Vendoring binaries" | arrow
 
-vendor "${ROOT_DIR}/build/imagemagick-heroku-20.tar.gz" "$BUILD_DIR/vendor/imagemagick"
+vendor "${ROOT_DIR}/build/imagemagick-heroku-22.tar.gz" "$BUILD_DIR/vendor/imagemagick"
 
 echo "Configuring build environment" | arrow
 
