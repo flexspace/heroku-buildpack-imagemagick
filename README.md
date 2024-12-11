@@ -14,9 +14,10 @@ In your project root:
 
 "index 1" means that imagemagick will be installed first.
 
+
 **Heroku 22:**
 
-`heroku buildpacks:add https://github.com/flexspace/heroku-buildpack-imagemagick.git#heroku-22 --index 1 --app HEROKU_APP_NAME`
+`heroku buildpacks:add https://github.com/flexspace/heroku-buildpack-imagemagick.git#v22 --index 1 --app HEROKU_APP_NAME`
 
 ### Clear cache
 Since the installation is cached you might want to clean it out due to config changes.
