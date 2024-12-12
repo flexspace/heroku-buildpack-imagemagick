@@ -6,7 +6,7 @@ heroku-buildpack-imagemagick
 - The current commit on master branch supports:
   * Heroku 20 & ImageMagick 7.1.1-30
   * Heroku 22 & ImageMagick 7.1.1-30
-  * Heroku 24 is not yet supported 
+  * Heroku 24 & ImageMagick 7.1.1-30
 
 ### Install
 
@@ -22,6 +22,6 @@ Since the installation is cached you might want to clean it out due to config ch
 1. `heroku plugins:install heroku-repo`
 2. `heroku repo:purge_cache -app HEROKU_APP_NAME`
 
-### Reference:
+### Reference to generate a tar file:
 
 * <https://elements.heroku.com/buildpacks/drnic/heroku-buildpack-imagemagick-webp>
