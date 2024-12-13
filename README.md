@@ -6,6 +6,7 @@ heroku-buildpack-imagemagick
 - The current commit on master branch supports:
   * Heroku 20 & ImageMagick 7.1.1-30
   * Heroku 22 & ImageMagick 7.1.1-30
+- This is NOT supported yet:
   * Heroku 24 & ImageMagick 7.1.1-41
 
 ### Install
